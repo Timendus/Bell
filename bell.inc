@@ -494,12 +494,13 @@ bell_swapByte:
 _bell_recvFirst:
 	; Receive data
 	call bell_recvByte
-	; Exit on receive error
-	ret nz
 	; Store the received byte
 	ld b,a
-	; Get the byte to send
-	pop af
+	; Get the byte to send without destroying the flags
+	pop de
+	ld a,d
+	; Exit on receive error
+	ret nz
 	; Store the received byte even safer
 	push bc
 	; Send data
