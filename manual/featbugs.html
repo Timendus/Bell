@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+	
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+			
+			<div class="text">
+				<h2>History and bugs</h2>
+				
+				<h3>Things it can do</h3>
+				
+				<dl>
+					<dt><a href="http://timendus.student.utwente.nl/~clap/bell/Bell_v0.1.zip">Version 0.1</a></dt>
+					<dd>
+						<ul>
+							<li>Set up a connection between two calculators, uniquely identifying the two and checking if they are running the same program</li>
+							<li>Swap a byte without the user having to worry about who goes first</li>
+							<li>Send data from one calculator to another in the form of a byte, a block of data (max 255 bytes) or a large block of data (max 65535 bytes)</li>
+							<li>Autodetect the calculator model you're compiling for (currently Ti-83 and Ti-83+ series are supported and tested for, Ti-84 &quot;should work&quot; but I don't have a rom image for it) and configure it's hardware control routines to match at compile time</li>
+							<li>Alert the coder about errors by always returning a status flag in z (nz is <span style="font-weight: bold">always</span> an indication that an error has occured)</li>
+							<li>Be compiled with your requirements only (by commenting what you don't need)</li>
+							<li>Use a user-definable timeout duration (you can even turn the feature off)</li>
+							<li>Output the selected hardware type (or an error if it wasn't able to detect it) and the number of bytes that the library takes up in your program to the compiler output</li>
+						</ul>
+					</dd>
+
+					<dt><a href="http://timendus.student.utwente.nl/~clap/bell/Bell_v0.2.zip">Version 0.2</a></dt>
+					<dd>
+						<ul>
+							<li>Send or receive zero terminated strings</li>
+							<li>Swap datablocks and strings</li>
+							<li>Compile for Ti-82</li>
+						</ul>
+					</dd>
+				</dl>
+				
+				<h3>Things it can't do <i>yet</i></h3>
+				
+				<ul>
+					<li>Compile for Ti-85/Ti-86 or other calculator models</li>
+					<li>Detect a connection &quot;on the fly&quot; (without having to wait at the &quot;waiting for opponent&quot; screen) - though I'm not sure if anyone would want/use this</li>
+					<li>Detect data transfer corruption (I plan to implement a simple parity bit check, but I doubt it's neccessary..)</li>
+					<li>Detect if the other calculator wants to send anything before going to receive mode (I'm not sure how to implement this yet)</li>
+				</ul>
+				
+				<h3>Things it will never be able to do</h3>
+				
+				<ul>
+					<li>Connect more than two calculators; that's what the <a href="http://clap.timendus.com/" target="_blank">CLAP project</a> is for</li>
+				</ul>
+				
+				<h3>Known bugs and errors</h3>
+				
+				<ul>
+					<li>Connecting a Ti-82 with a Ti-83(+) seems to give quite a bit of connection timeouts. This is probably due to the difference in execution speed between the two models, though it could also be because I can't write proper software for Ti-82 :-)</li>
+					<li>Routine bell_connect takes too long to return, and it seems like both calculators return at a different moment. This requires the timeout setting to be higher than should be neccessary.</li>
+				<ul>
+				
+			</div>
+			
+			<div class="ring">
+				<p><a href="game.html">&lt; previous</a> | <a href="index.html">contents</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>

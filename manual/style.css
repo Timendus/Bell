@@ -1,0 +1,92 @@
+body {
+	text-align: center;
+	background-color: white;
+	font-family: Tahoma, Arial, sans-serif;
+	font-size: 14px;
+	color: black;
+}
+
+.container {
+	margin: auto;
+	width: 600px;
+	text-align: left;
+	background-color: #EEEEEE;
+	border: 2px solid grey;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.header h1 {
+	font-size: 25px;
+	text-align: center;
+	margin: 10px 0px 0px 0px;
+}
+.header p {
+	text-align: center;
+	margin: 0px 0px 15px 0px;
+	font-size: 12px;
+}
+
+.ring {
+	text-align: center;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
+.text h2:before {
+	content: "\0020 \0020 \0020 \00BB \0020";
+}
+.text h3 {
+	margin: 25px 0px -5px 0px;
+	padding: 0px;
+	font-size: 16px;
+}
+.text p {
+	font-family: "Bookman Old Style","Times New Roman",serif;
+	font-size: 14px;
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: justify;
+}
+.text dt {
+	font-style: italic;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.text dd {
+	font-family: "Bookman Old Style","Times New Roman",serif;
+	font-size: 14px;
+	margin: 3px 20px 15px 50px;
+	text-align: justify;
+}
+.text dd ul {
+	margin: 15px 0px 15px -20px;
+}
+.text li {
+	font-family: "Bookman Old Style","Times New Roman",serif;
+	font-size: 14px;
+	margin-right: 20px;
+	text-align: justify;
+}
+.text img {
+	margin: 10px 10px 10px 60px;
+	border: 1px solid black;
+}
+
+.contents h2:before {
+	content: "\0020 \0020 \0020 \00BB \0020";
+}
+.contents li {
+	font-family: "Bookman Old Style","Times New Roman",serif;
+	font-size: 14px;
+}
+
+.code {
+	white-space: pre;
+	margin: 20px 20px 0px 50px;
+	padding: 0px;
+	font-family: Courier,sans-serif;
+	font-size: 10px;
+}
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+		
+			<div class="text">
+				<h2>Sending over data</h2>
+				
+				<h3>Using send and receive</h3>
+				
+				<p>If you want to send over some data from one calculator to another (in one direction) or you haven't called <kbd>bell_connect</kbd>, you can use the send and receive routines to transfer bytes, blocks of data or strings. All you have to do is call <kbd>bell_sendXXX</kbd> on one calculator and the corresponding <kbd>bell_recvXXX</kbd> on the other at approximately the same time (within the timeout delay) and the routines will do the rest. A demonstration of how to send over "Hello world":</p>
+				
+				<div class="code">	call bell_sync	; synchronize
+	ret nz		; return if clear was pressed
+	or a		; which calculator are we?
+	jp nz,receive	; if we're the second connected calc,
+			; receive the string
+	
+send:			; otherwise; send the string
+	ld hl,string
+	call bell_sendString
+	ret
+
+receive:
+	ld hl,saferam1	; receive the string to some buffer
+	call bell_recvString
+	ret nz		; return if a transmission error occured
+	bcall(_clrLCDFull)
+	ld hl,saferam1
+	bcall(_puts)	; display the string
+	bcall(_getkey)	; wait for a keypress
+	ret		; and return
+	
+string:
+	.db "Hello world!",0</div>
+				
+				<h3>Using swap</h3>
+				
+				<p>Swapping data is much easier in situations where both calculators are more or less equal and they need to exchange the same kind of data (a game for example). You just call <kbd>bell_swapXXX</kbd> on both calculators at approximately the same time (within the timeout delay) and the routine will swap the data for you. A demonstration of how to use this will be given in the form of a simple game.</p>
+				
+			</div>
+			
+			<div class="ring">
+				<p><a href="connect.html">&lt; previous</a> | <a href="index.html">contents</a> | <a href="game.html">next &gt;</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>

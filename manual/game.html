@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+		
+			<div class="text">
+				<h2>Writing a simple game</h2>
+				
+				<p>Okay, maybe it's not really a game, but you should keep in mind that I'm not a game programmer. I don't know much about efficient tilemapping and the lot, but I do know how to put a sprite on the screen and move it around using the arrow keys ;-) This little "game" will enable two players to move their own sprite and watch the other's sprite move as well:</p>
+				
+				<img src="BellDemo1.gif"/>
+				
+				<p>First I'll initiate some variables for the player's positions. Notice how they follow the same order and are grouped per player.</p>
+				
+				<div class="code">my_x = savesscreen
+my_y = savesscreen+1
+his_x = savesscreen+2
+his_y = savesscreen+3
+	
+program_start:
+
+	ld a,25
+	ld (my_x),a
+	ld (my_y),a
+	ld (his_x),a
+	ld (his_y),a</div>
+
+				<p>This is our "model" of the game, in it's most low-level form. Next, we're going to try to connect the calculators. Notice I use <a href="http://api.timendus.com/" target="_blank">the API</a> for outputting to the display; otherwise the demo will be less readable and much longer :-).</p>
+
+				<div class="code">	; Try to connect to an opponent
+	home.clear()
+	home.output("Waiting for     opponent...")
+	call bell_connect
+	jp nz,connect_error
+	
+	; If we get through, connection is established</div>
+	
+				<p>Okay, we've got a connection! Otherwise, we would have jumped to <kbd>connect_error</kbd>, which you can find at the bottom of the program. Now we move on to the main program loop.</p>
+				
+				<div class="code">game_loop:
+	call checkKeys		; Update the model on keypress
+	call swapData		; Swap part of the model
+	call updateScreen	; Redraw the screen
+	jp game_loop		; Loop!</div>
+	
+				<p>As you can see, we just check for keypresses on the local calculator and update our model if we've tried to move our own sprite. Then we reload the part of our model that the other calculator is responsible for, and we call the routine that knows what to display depending on the model. As I said; I don't know much about game programming, but I'd say this seems the "proper" way to do it.</p>
+				
+				<p>Next up; check if a key was pressed, and if so; update the model or quit the program.</p>
+				
+				<div class="code">checkKeys:
+	ld a,$FF
+	out (1),a
+	ld a,$FE		; Check for all cursor keys
+	out (1),a
+	in a,(1)
+	cp 254
+	jp z,move_down
+	cp 253
+	jp z,move_left
+	cp 251
+	jp z,move_right
+	cp 247
+	jp z,move_up
+
+	ld a,$FF		; Check for Clear
+	out (1),a
+	ld a,$FD
+	out (1),a
+	in a,(1)
+	cp 191
+	jr z,exit_from_keys
+	
+	ret
+	
+exit_from_keys:
+	pop hl		; Pop return address; we want to exit the
+	jp exit		; program, not return to the game loop
+	
+move_down:
+	ld a,(my_y)	; Pretty self-explainatory
+	inc a
+	ld (my_y),a
+	ret
+move_up:
+	ld a,(my_y)
+	dec a
+	ld (my_y),a
+	ret
+move_left:
+	ld a,(my_x)
+	dec a
+	ld (my_x),a
+	ret
+move_right:
+	ld a,(my_x)
+	inc a
+	ld (my_x),a
+	ret</div>
+	
+				<p>That was pretty simple, right? I could have used the API a bit more for that, but it's readable enough to anyone who's ever read keys from the port before. Now comes the interesting part, the swapping of data, and because Bell makes it so damned simple it's kinda disappointing:</p>
+	
+				<div class="code">swapData:
+	ld hl,my_x
+	ld de,his_x
+	ld b,2
+	call bell_swapBlock
+	jp nz,error
+	ret</div>
+	
+				<p>"Is that all?!" - I hear you ask. Yes, that's all. We tell Bell to swap two bytes (in b), we want to send our own coordinates (my_x in hl) and overwrite the other player's coordinates with what we receive (his_x in de). It's almost as simple as ldir :-). This will update the model on both calculators with the coordinates from their opponents. So if the other player has moved, our model gets updated with his new coordinates, and our drawing routine will show him in the right spot. If the transfer screws up (you've pulled out the cable or the other player quits the program for example) we jump to <kbd>error</kbd>.</p>
+				
+				<p>The next routine is pretty boring too, but it's got to be done:</p>
+				
+				<div class="code">updateScreen:
+	; Clear the screen
+	ld hl,plotsscreen
+	ld de,plotsscreen+1
+	ld bc,767
+	xor a
+	ld (hl),aThe basics
+	ldir
+	
+	; I want to use the OR sprite routine from the API
+	#define api_use_sprite_drawOr
+	
+	; Draw my sprite
+	ld hl,sprite
+	ld a,(my_x)
+	ld d,a
+	ld a,(my_y)
+	ld e,a
+	call api_sprite_drawOr
+	
+	; Draw his sprite
+	ld hl,sprite
+	ld a,(his_x)
+	ld d,a
+	ld a,(his_y)
+	ld e,a
+	call api_sprite_drawOr
+	
+	call ionFastCopy
+	
+	ret</div>
+	
+				<p>Okay, we're pretty much done now. Only a few more things to do: first we need a few error routines that give a nice error to the user when something goes wrong.</p>
+				
+				<div class="code">connect_error:
+	ei
+	home.clear()
+	home.output("Could not       connect :-(")
+	jr error_done
+	
+error:
+	pop hl
+	ei
+	home.clear()
+	home.output("Connection lost")
+	
+error_done:
+	kbd.waitkey()
+exit:
+	ei
+	ret</div>
+	
+				<p>I re-enable interrupts before calling Ti-OS routines (through the API) because <kbd>bell_connect</kbd> disables them and Ti-83+ and Ti-82 don't like running Ti-OS routines with interrupts disabled. In fact; it crashes them :-)</p>
+		
+				<p>Now, the most important thing: include the Bell library ;-). Notice that I left the API inclusion out of this demo. See the <a href="http://api.timendus.com/" target="_blank">API website</a> about information on how to do that.</p>
+	
+				<div class="code">	.include "bell.inc"</div>
+				
+				<p>And finally: our data. It isn't much, but it should be placed after the Bell include nevertheless for the sake of the example :-)</p>
+
+				<div class="code">sprite:
+	.db 7
+	.db %00011000
+	.db %00011000
+	.db %00111100
+	.db %01011010
+	.db %00011010
+	.db %00101000
+	.db %00101000</div>
+	
+				<p>That's all! I hope you enjoyed this little demonstration, and I hope I've explained enough about the use of the Bell library in this manual. Good luck with it!</p>
+				
+			</div>
+			
+			<div class="ring">
+				<p><a href="sending.html">&lt; previous</a> | <a href="index.html">contents</a> | <a href="featbugs.html">next &gt;</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>

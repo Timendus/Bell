@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+	
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+		
+			<div class="text">
+				<h2>Using the library</h2>
+				
+				<h3>Including in your source</h3>
+				
+				<p>To be able to use the library in your software, you need to download the <a href="http://timendus.student.utwente.nl/~clap/bell/Bell_v0.2.zip">include file</a> to your project directory and include it in your project source file like so:</p>
+				
+				<p><kbd>#include "bell.inc"</kbd></p>
+				
+				<p>This will include a bunch of routines, some that Bell needs, some that you can call. This means that you shouldn't include Bell at the top of your program like you do with an equates include, because that would execute Bell code before your code. Preferably include it at the end of your program, but before your program data, because Bell has mostly code that needs to be executed, and you don't want to put that after the executable code limit.</p>
+				
+				<h3>Settings</h3>
+				
+				<p>Once you have included the library in your project, you'll want to change some settings in <kbd>bell.inc</kbd>. Open it up in your editor and walk through the settings described there. Make sure you have changed the program identification string to the name (and version number) of your program and that you have commented the functionality defines that you don't want. You'll be wasting precious bytes on your calculator otherwise.</p>
+				
+				<h3>Routines</h3>
+				
+				<p>The routines that Bell makes available for you to use after inclusion are the following:
+				
+				<dl>
+					<dt>bell_connect</dt>
+					<dd>Waits untill a connected calculator runs a Bell-compatible program. After that, it checks to see if both calculators are running the same program. If so, it returns at approximately the same time on both calculators with the z-flag set. Incompatible program types or a user pressing [Clear] while waiting for an opponent returns nz. You need to run this routine at least once before you can use the swap routines, because this routine initializes the unique calculator IDs.</dd>
+					
+					<dt>bell_sync</dt>
+					<dd>Waits for another calculator to run the same routine, and returns at approximately the same time on both calculators. Returns z on proper synchronize, nz if the user pressed [Clear] while waiting for the other calculator, and the calculator ID in a. <kbd>bell_connect</kbd> uses this routine for the initial synchronization.</dd>
+					
+					<dt>bell_sendByte</dt>
+					<dd>Sends the value in a through the link port. If timeouts aren't disabled, it will return nz on a timeout or z when the byte is transferred properly. Otherwise it will return z or loop indefinately.</dd>
+					
+					<dt>bell_recvByte</dt>
+					<dd>Receives a byte from the link port in register a. If timeouts aren't disabled, it will return nz on a timeout or z when the byte is received properly. Otherwise it will return z or loop indefinately.</dd>
+					
+					<dt>bell_swapByte</dt>
+					<dd>Swaps the byte in register a with the connected calculator; the received byte is also returned in a. If timeouts aren't disabled, it will return nz on a timeout or z when the byte is swapped properly. Otherwise it will return z or loop indefinately. This routine requires the calculator IDs to have been set, so you need to have called bell_connect before you can use this routine.</dd>
+					
+					<dt>bell_sendBlock</dt>
+					<dd>Send a block of bytes through the link port. Expects hl to be a pointer to the start of the block of data to be sent and b to be the number of bytes you want to send. If timeouts aren't disabled, it will return nz on a timeout or z when the block is sent properly. Otherwise it will return z or loop indefinately. Maximum block size: 255 bytes.</dd>
+					
+					<dt>bell_recvBlock</dt>
+					<dd>Receive a block of bytes from the link port. Expects hl to be a pointer to a buffer where the received data will be stored. You have to make sure you don't send more bytes than the size of the buffer, because the routine will <b>not</b> handle buffer overflows. If timeouts aren't disabled, it will return nz on a timeout or z when the block is received properly. Otherwise it will return z or loop indefinately. Maximum block size: 255 bytes.</dd>
+					
+					<dt>bell_swapBlock</dt>
+					<dd>Swaps a block of data with the other calc. Expects hl to be a pointer to the start of the block of data to be sent, de to be a pointer to the start of a buffer where the received data will be stored and b to be the number of bytes to be swapped. The latter should be the same on both calculators, otherwise one of them will time out. hl and de can point to the same location in memory, in which case the buffer will literally be swapped. If timeouts aren't disabled, it will return nz on a timeout or z when the block is swapped properly. Otherwise it will return z or loop indefinately. This routine requires the calculator IDs to have been set, so you need to have called bell_connect before you can use this routine. Maximum block size: 255 bytes.</dd>
+					
+					<dt>bell_sendLargeBlock</dt>
+					<dd>Send a block of bytes through the link port. Expects hl to be a pointer to the start of the block of data to be sent and bc to be the number of bytes you want to send. If timeouts aren't disabled, it will return nz on a timeout or z when the block is sent properly. Otherwise it will return z or loop indefinately. Maximum block size: 65535 bytes.</dd>
+					
+					<dt>bell_recvLargeBlock</dt>
+					<dd>Receive a block of bytes from the link port. Expects hl to be a pointer to a buffer where the received data will be stored. You have to make sure you don't send more bytes than the size of the buffer, because the routine will <b>not</b> handle buffer overflows. If timeouts aren't disabled, it will return nz on a timeout or z when the block is received properly. Otherwise it will return z or loop indefinately. Maximum block size: 65535 bytes.</dd>
+					
+					<dt>bell_swapLargeBlock</dt>
+					<dd>Swaps a block of data with the other calc. Expects hl to be a pointer to the start of the block of data to be sent, de to be a pointer to the start of a buffer where the received data will be stored and bc to be the number of bytes to be swapped. The latter should be the same on both calculators, otherwise one of them will time out. hl and de can point to the same location in memory, in which case the buffer will literally be swapped. If timeouts aren't disabled, it will return nz on a timeout or z when the block is swapped properly. Otherwise it will return z or loop indefinately. This routine requires the calculator IDs to have been set, so you need to have called bell_connect before you can use this routine. Maximum block size: 65535 bytes.</dd>
+										
+					<dt>bell_sendString</dt>
+					<dd>Send a zero terminated string through the link port. Expects hl to be a pointer to the start of the string to be sent. If timeouts aren't disabled, it will return nz on a timeout or z when the string is sent properly. Otherwise it will return z or loop indefinately.</dd>
+					
+					<dt>bell_recvString</dt>
+					<dd>Receive a zero terminated string from the link port. Expects hl to be a pointer to the start of a buffer to store the received string. You have to make sure you don't send more bytes than the size of the buffer, because the routine will <b>not</b> handle buffer overflows. If timeouts aren't disabled, it will return nz on a timeout or z when the string is received properly. Otherwise it will return z or loop indefinately.</dd>
+					
+					<dt>bell_swapString</dt>
+					<dd>Swaps a zero terminated string with the other calc. Expects hl to be a pointer to the start of the string to be sent, and de to be a pointer to the start of a buffer to store the received string. hl and de can not point to the same location.  If timeouts aren't disabled, it will return nz on a timeout or z when the strings are swapped properly. Otherwise it will return z or loop indefinately. This routine requires the calculator IDs to have been set, so you need to have called bell_connect before you can use this routine.</dd>
+				</dl></p>
+			</div>
+			
+			<div class="ring">
+				<p><a href="basics.html">&lt; previous</a> | <a href="index.html">contents</a> | <a href="connect.html">next &gt;</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>

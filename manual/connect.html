@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+	
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+		
+			<div class="text">
+				<h2>Connecting</h2>
+				
+				<p>Before you can send data from one calculator to another, you have to synchronize them somewhat, otherwise the send and receive routines will just time out and return an error. There are two ways to synchronize the calculators with this library; with <kbd>bell_sync</kbd> or with <kbd>bell_connect</kbd>. The former only waits untill both calculators are running this routine (within whichever program that uses this method). The latter also checks if the program IDs of the two calculators match, and sets the calculator IDs if it can connect. Usually you only use <kbd>bell_sync</kbd> for testing and <kbd>bell_connect</kbd> to initialize games.</p>
+				
+				<p>After you have connected the two calculators with <kbd>bell_connect</kbd> you can use the swap routines. This will probably be the most common use of Bell; connect first, then swap a block of data on every iteration of the main program loop.</p>
+				
+			</div>
+			
+			<div class="ring">
+				<p><a href="usage.html">&lt; previous</a> | <a href="index.html">contents</a> | <a href="sending.html">next &gt;</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>

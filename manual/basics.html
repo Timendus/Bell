@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+
+	<head>
+		<title>Bell v0.2 manual</title>
+		<link href="style.css" rel="stylesheet" type="text/css">
+	</head>
+	
+	<body>
+		<div class="container">
+
+			<div class="header">
+				<h1>Bell v0.2 manual</h1>
+				<p><i>Binary data Exchange Link Library</i></p>
+			</div>
+			
+			<div class="text">
+				<h2>Introduction</h2>
+				
+				<h3>Goals of Bell</h3>
+				
+				<p>The reason I started Bell was because I had been concentrating on <a href="http://clap.timendus.com/" target="_blank">the CLAP project</a> so hard that I forgot about the "normal" use of calculator linking. I realized that programmers would want to use my routines for writing multiplayer games between two calculators, and don't care about the theoretical possibilities of multicalculator networking. Of course CLAP can be used to write two player games, but it wasn't meant to be used for that, and because of the multicalc idea the protocol isn't too fast and the routines are unneccessarily complex. Bell should solve this problem by providing a very simple interface to the link port and data transfer aimed especially at game programmers, and is only available in a two calculator version.</p>
+				
+				<p>So the main goal of Bell is to provide programmers with a set of routines to transfer data as fast as possible between two calculators. Secondary goals include ease of use, reliablility, useful error reporting and completeness.</p>
+				
+				<h3>Speed</h3>
+				
+				<p>The speed of a transfer routine is always difficult to determine, so I'm not even going to try to be accurate, but the routines take approximately 7 and a half seconds to transfer 10000 bytes from one calculator to another in PTI. Seeing that PTI nicely reports the calculators to be running at 100%, I guess I could base my calculations on that. 7.5 seconds for 10KB makes 1.33 kB/s or 10.66 kbps. According to <a href="http://www.ocf.berkeley.edu/~pad/faq/xfer.html#5" target="_blank">this website</a> that pretty much rivals the Ti-OS routines, or it may even be a slight bit faster.</p>
+	
+				<h3>Why the name?</h3>
+	
+				<p>Alexander Graham Bell may not have been the inventor of the first telephone, but it was Bell who made it popular and who, through his company, made it possible for ordinary people to make phonecalls. That's pretty much what this library should do; it's not really anything new, nothing that hasn't been done before, but it should make a different kind of electronic communication more popular and much easier to use.</p>
+
+				<p>Apart from that, the word "Bell" nicely fits with the word "Clap" :-)</p>
+				
+				<h3>Who am I?</h3>
+				
+				<p>I am a student in computer science from the Netherlands, who goes by the nickname Timendus. Playing with assembly and Texas Instruments calculators has been a hobby of mine for many years, and currently I prefer to write libraries and tools for calculator assembly programmers.</p>
+				
+				<p>This protocol and all the software that I wrote for this project are released under Smitemeister Software, a very small group of programmers who have been working together for years. The copyright will be held by me, but of course you may use the protocol and the library freely, as long as you give credit for my work and put a link to this website in your source and/or readme file.</p>
+			</div>
+			
+			<div class="ring">
+				<p><a href="index.html">&lt; previous</a> | <a href="index.html">contents</a> | <a href="usage.html">next &gt;</a></p>
+			</div>
+
+		</div>
+	</body>
+
+</html>
